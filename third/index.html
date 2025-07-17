@@ -27,10 +27,8 @@
   $(function(){
     $('.nav li').click(function(){
       const index = $(this).index();
-
       $('.contents li').addClass('is-hidden');
       $('.contents li').eq(index).removeClass('is-hidden');
-
       $('.nav li').removeClass('is-active');
       $(this).addClass('is-active');
     });
