@@ -46,6 +46,7 @@
     <button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>
   `;
 
+  // ポケモンを探す
   function searchPokemon() {
     const randomId = Math.floor(Math.random() * 151) + 1;
     $.ajax({
@@ -56,9 +57,11 @@
       console.log(res.species.url);
       console.log(res.sprites.front_default);
 
+      // エンカウント画面を表示して画像だけ設定
       wrapper.html(encountHtml);
       $('.img').attr('src', res.sprites.front_default);
 
+      // 日本語名取得のため、speciesのURLに再リクエスト
       $.ajax({
         url: res.species.url,
         type: 'GET',
@@ -67,13 +70,17 @@
         const jaName = speciesRes.names.find(n => n.language.name === 'ja');
         $('.name').text(jaName ? jaName.name : '名前不明');
       });
-    }).fail(function() {
-      alert('ポケモンの取得に失敗しました。');
+      }).fail(function() {
+        alert('ポケモンの取得に失敗しました。');
     });
   }
+
+  // ポケモンを探すボタンの実行
   wrapper.on('click', '#pokemon_search', function() {
     searchPokemon();
   });
+
+  // 捕まえるボタン処理
   wrapper.on('click', '#catch', function() {
     const isSuccess = Math.random() < 0.5;
     if (isSuccess) {
@@ -82,6 +89,8 @@
       wrapper.html(failHtml);
     }
   });
+
+  // 「戻る」または「逃げる」ボタン処理
   wrapper.on('click', '[data-js="reset"]', function() {
     wrapper.html(searchBtnHtml);
   });

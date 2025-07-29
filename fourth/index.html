@@ -50,11 +50,16 @@
 
       $(function(){
         $('.menu__list > li').hover(
+          // .menu_listというクラスの直下にあるli要素すべてを選択
           function() {
+            // カーソルが乗った時
             $(this).children('.menu__list__childList').stop().slideDown(400);
+            // 400ミリ秒かけてスライド表示
          },
           function() {
+            // カーソルが離れたとき
             $(this).children('.menu__list__childList').stop().slideUp(400);
+            // 400ミリ秒かけてスライド非表示
          }
        );
     });
