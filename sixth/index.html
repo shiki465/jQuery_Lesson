@@ -15,69 +15,77 @@
   </div>
   <script src="../../common/js/jquery.js"></script>
 <script>
-  $(function () {
-    const wrapper = $('#wrapper');
-    const defaultBtn = '<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>';
+  $(function() {
+  const wrapper = $('.wrapper');
 
-    let failHtml = `
-      <p class="text">逃げられてしまった...</p>
-      <button class="btn mt" data-js="reset">戻る</button>
-    `;
+  let failHtml = `
+    <p class="text">逃げられてしまった...</p>
+    <button class="btn mt" data-js="reset">戻る</button>
+  `;
 
-    let encountHtml = `
-      <p class="name"></p>
-      <div>
-        <img class="img" src="" alt="">
-      </div>
-      <div>
-        <button class="btn" id="catch">捕まえる</button>
-        <button class="btn" data-js="reset">逃げる</button>
-      </div>
-    `;
+  let encountHtml = `
+    <p class="name"></p>
+    <div>
+      <img class="img" src="" alt="">
+    </div>
+    <div>
+      <button class="btn" id="catch">捕まえる</button>
+      <button class="btn" data-js="reset">逃げる</button>
+    </div>
+  `;
 
-    let doneHtml = `
-      <p class="name">ゲットしました！</p>
-      <div>
-        <img class="img" src="" alt="">
-      </div>
-      <button class="btn" data-js="reset">戻る</button>
-    `;
+  let doneHtml = `
+    <p class="name">ゲットしました</p>
+    <div>
+      <img class="img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="モンスターボール">
+    </div>
+    <button class="btn" data-js="reset">戻る</button>
+  `;
 
-    wrapper.on('click', '#pokemon_search', function () {
-      const randomId = Math.floor(Math.random() * 151) + 1;
-      const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${randomId}`;
-      const speciesUrl = `https://pokeapi.co/api/v2/pokemon-species/${randomId}`;
+  let searchBtnHtml = `
+    <button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>
+  `;
 
-      $.getJSON(pokemonUrl, function (res) {
-        console.log(res.species.url);
-        console.log(res.sprites.front_default);
+  function searchPokemon() {
+    const randomId = Math.floor(Math.random() * 151) + 1;
+    $.ajax({
+      url: `https://pokeapi.co/api/v2/pokemon/${randomId}`,
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(res) {
+      console.log(res.species.url);
+      console.log(res.sprites.front_default);
 
-        $.getJSON(res.species.url, function (speciesData) {
-          let jpName = speciesData.names.find(n => n.language.name === 'ja').name;
+      wrapper.html(encountHtml);
+      $('.img').attr('src', res.sprites.front_default);
 
-          wrapper.html(encountHtml);
-          $('.name').text(jpName);
-          $('.img').attr('src', res.sprites.front_default);
-        });
+      $.ajax({
+        url: res.species.url,
+        type: 'GET',
+        dataType: 'json'
+      }).done(function(speciesRes) {
+        const jaName = speciesRes.names.find(n => n.language.name === 'ja');
+        $('.name').text(jaName ? jaName.name : '名前不明');
       });
+    }).fail(function() {
+      alert('ポケモンの取得に失敗しました。');
     });
-
-    wrapper.on('click', '#catch', function () {
-      const isSuccess = Math.random() < 0.5;
-
-      if (isSuccess) {
-        const ballUrl = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png';
-        wrapper.html(doneHtml);
-        $('.img').attr('src', ballUrl);
-      } else {
-        wrapper.html(failHtml);
-      }
-    });
-
-    wrapper.on('click', '[data-js="reset"]', function () {
-      wrapper.html(defaultBtn);
-    });
+  }
+  wrapper.on('click', '#pokemon_search', function() {
+    searchPokemon();
   });
+  wrapper.on('click', '#catch', function() {
+    const isSuccess = Math.random() < 0.5;
+    if (isSuccess) {
+      wrapper.html(doneHtml);
+    } else {
+      wrapper.html(failHtml);
+    }
+  });
+  wrapper.on('click', '[data-js="reset"]', function() {
+    wrapper.html(searchBtnHtml);
+  });
+});
 </script>
 </body>
 </html>

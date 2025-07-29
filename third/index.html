@@ -24,15 +24,27 @@
     </div>
     <script src="../../common/js/jquery.js"></script>
 <script>
-  $(function(){
-    $('.nav li').click(function(){
-      const index = $(this).index();
-      $('.contents li').addClass('is-hidden');
-      $('.contents li').eq(index).removeClass('is-hidden');
-      $('.nav li').removeClass('is-active');
-      $(this).addClass('is-active');
-    });
+// ｊSはhtmlを動かすための言語
+// やりたいことはなにか
+// 「なにがどうなったときに、どうなってほしい」
+// 「navの中のliがクリックされたときに、contentsのliが切り替わる処理をしたい」
+// 「navの中のliがクリックされたときに、同じ順番のcontentsの中のliが表示され、他の要素は非表示にする処理をしたい」
+
+ $(function(){
+  $('.nav li').click(function(){   
+    const index = $(this).index();
+    $('.contents li').addClass('is-hidden');
+    $('.contents li').eq(index).removeClass('is-hidden');
   });
+});
+
+// 今回やるのはタブメニューです。
+// navの小要素であるliをクリックして、contents内の小要素であるli要素を表示させる。
+// .index() 要素のindexを取得します。
+// .eq() 引数に応じたindexの要素を指定します。
+// .addClass() クラスを追加します。
+// .removeClass() クラスを削除します。
+
 </script>
   </body>
 </html>
